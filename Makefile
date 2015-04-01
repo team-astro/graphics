@@ -12,7 +12,7 @@ endif
 program_NAME := gamma-test
 program_SRCS := $(shell find test -type f -name '*.cpp')
 program_OBJS := ${program_SRCS:.cpp=.o}
-program_INCLUDE_DIRS := include thirdparty/catch
+program_INCLUDE_DIRS := include external/mu/include thirdparty/catch
 program_LIBRARY_DIRS :=
 program_LIBRARIES :=
 
