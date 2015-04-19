@@ -1,5 +1,5 @@
-gamma
-=====
+Astro Graphics
+==============
 
 Rendering abstraction
 
