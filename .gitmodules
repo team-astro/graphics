@@ -1,4 +1,0 @@
-[submodule "external/mu"]
-	path = external/mu
-	url = git@bitbucket.org:mattrudder/mu.git
-	branch = develop
