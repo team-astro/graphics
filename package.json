@@ -1,0 +1,18 @@
+{
+  "name": "graphics",
+  "version": "0.0.1",
+  "repo": "team-astro/graphics",
+  "description": "Graphics abstraction library",
+  "keywords": ["graphics"],
+  "license": "MIT",
+  "src": [
+    "include/astro-graphics/application.h",
+    "include/astro-graphics/osx/application.mm",
+    "include/astro-graphics/osx/window.mm",
+    "include/astro-graphics/window.h"
+  ],
+  "dependencies": {
+    "team-astro/astro": "develop",
+    "team-astro/io": "develop"
+  }
+}
