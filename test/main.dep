@@ -1,5 +1,4 @@
-test/main.o: test/main.cpp external/mu/external/catch/catch.hpp \
-  test/application_tests.h include/gamma/application.h \
-  external/mu/include/mu/mu.h external/mu/include/mu/config.h \
-  external/mu/include/mu/platform.h external/mu/include/mu/macros.h \
-  external/mu/include/mu/types.h external/mu/include/mu/memory.h
+test/main.o: test/main.cpp deps/greatest/greatest.h \
+  test/application_tests.h include/astro-graphics/application.h \
+  deps/astro/astro.h deps/astro/config.h deps/astro/platform.h \
+  deps/astro/macros.h deps/astro/types.h deps/astro/memory.h

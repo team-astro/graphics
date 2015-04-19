@@ -1,13 +1,15 @@
-#include <mu/mu.h>
-#include <mu/memory.h>
-using namespace mu;
+#include <astro/astro.h>
+#include <astro/memory.h>
+using namespace astro;
 
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl3.h>
 
 @class GammaRenderView;
 
-namespace gamma
+namespace astro
+{
+namespace graphics
 {
   struct osx_window : public window
   {
@@ -16,6 +18,9 @@ namespace gamma
     NSEventModifierFlags lastKeyFlags;
   };
 }
+}
+
+using namespace astro::graphics;
 
 inline void
 handle_key_change(osx_window* window, NSEvent* e)
@@ -394,7 +399,9 @@ DisplayLinkCallback(CVDisplayLinkRef,
 // - (void)windowDidExitVersionBrowser:(NSNotification *)notification { }
 @end
 
-namespace gamma
+namespace astro
+{
+namespace graphics
 {
   void
   null_on_render(window*, real32)
@@ -486,7 +493,7 @@ namespace gamma
   {
     osx_window* osx_win = (osx_window*) win;
 
-    // NOTE(matt): Need to lock the context to avoid simultaneous access between
+    // NOTE(matt): Need to lock the context to avoid siastroltaneous access between
     // resize (main thread) and CVDisplayLink (background thread)
     CGLLockContext([[osx_win->view openGLContext] CGLContextObj]);
     if (resize)
@@ -509,4 +516,5 @@ namespace gamma
     CGLFlushDrawable([[osx_win->view openGLContext] CGLContextObj]);
     CGLUnlockContext([[osx_win->view openGLContext] CGLContextObj]);
   }
+}
 }

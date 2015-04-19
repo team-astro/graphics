@@ -1,14 +1,16 @@
 /**
-* Copyright 2015 Matt Rudder. All rights reserved.
+* Copyright 2015 Team Astro. All rights reserved.
 */
 
 #ifndef GAMMA_WINDOW
 #define GAMMA_WINDOW
 
-#include <mu/mu.h>
-#include <gamma/application.h>
+#include <astro/astro.h>
+#include <astro-graphics/application.h>
 
-namespace gamma
+namespace astro
+{
+namespace graphics
 {
   struct window_events
   {
@@ -81,10 +83,13 @@ namespace gamma
   window* create_window(application* app, const char* title, uint16 width, uint16 height);
   void draw_window(window* window, real32 delta_time, bool32 resize);
 }
+}
 
-#if defined(GAMMA_IMPLEMENTATION)
-# if MU_PLATFORM_OSX
-#   include <gamma/osx/window.mm>
+// TODO: Figure out the best way to structure this to work with clib.
+// clib likes to flatten directory hierarchies. :(
+#if defined(ASTRO_IMPLEMENTATION)
+# if ASTRO_PLATFORM_OSX
+#include <astro-graphics/osx/window.mm>
 # endif
 #endif
 

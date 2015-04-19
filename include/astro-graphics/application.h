@@ -1,36 +1,52 @@
 /**
-* Copyright 2015 Matt Rudder. All rights reserved.
+* Copyright 2015 Team Astro. All rights reserved.
 */
 
-#ifndef MU_APPLICATION
-#define MU_APPLICATION
+#ifndef ASTRO_APPLICATION
+#define ASTRO_APPLICATION
 
-#include <mu/mu.h>
-#include <mu/memory.h>
+#include <astro/astro.h>
+#include <astro/memory.h>
 
-namespace gma
+namespace astro
 {
+  // TODO: Define these types elsewhere.
+  struct vec2
+  {
+    real32 x, y;
+  };
+
+  struct vec3
+  {
+    real32 x, y, z;
+  };
+
+namespace graphics
+{
+  struct window_list;
+  
   struct application
   {
     bool32 is_running;
-    mu::memory_pool* pool;
+    astro::memory_pool* pool;
+    window_list* windows;
 
     void (*on_startup)(application* app);
     void (*on_shutdown)(application* app);
   };
 
-  application* create_application(mu::memory_pool* pool);
+  application* create_application(astro::memory_pool* pool);
   void update_application(application* app);
   void quit_application(application* app);
   void dispose_application(application* app);
 
   void set_clipboard_text(const char* text);
-  const char* get_clipboard_text(mu::memory_pool* pool);
+  const char* get_clipboard_text(astro::memory_pool* pool);
 }
-
-#if defined(MU_IMPLEMENTATION)
-# if MU_PLATFORM_OSX
-#   include <mu/osx/application.mm>
+}
+#if defined(ASTRO_IMPLEMENTATION)
+# if ASTRO_PLATFORM_OSX
+#include <astro-graphics/osx/application.mm>
 # endif
 #endif
 

@@ -1,6 +1,18 @@
 UNAME := $(shell uname)
 ifeq ($(UNAME),$(filter $(UNAME),Linux Darwin))
 	ifeq ($(UNAME),$(filter $(UNAME),Darwin))
+		XCODE_BASE=$(shell xcode-select -p)
+
+		PLATFORM=MacOSX
+		SDK=MacOSX10.10
+
+		PLATFORM_BASE=${XCODE_BASE}/Platforms/${PLATFORM}.platform
+		SYSROOT=${PLATFORM_BASE}/Developer/SDKs/${SDK}.sdk
+
+		CXXFLAGS += -stdlib=libc++ -isysroot ${SYSROOT}
+		CXXFLAGS += -framework OpenGL -framework CoreVideo -framework Cocoa
+		CXXFLAGS += -fobjc-arc -fobjc-link-runtime -mmacosx-version-min=10.9
+
 		# TODO: Check for iOS build flags.
 		OS=osx
 	else
@@ -17,7 +29,7 @@ program_SRCS += $(shell find test/$(OS) -type f \( -name "*.cpp" -or -name "*.mm
 program_OBJS := ${program_SRCS:.cpp=.o}
 program_OBJS := ${program_OBJS:.mm=.o}
 program_DEPS := ${program_OBJS:.o=.dep}
-program_INCLUDE_DIRS := include external/mu/include external/mu/external/catch
+program_INCLUDE_DIRS := include deps
 program_LIBRARY_DIRS :=
 program_LIBRARIES :=
 
@@ -27,14 +39,9 @@ LDFLAGS += $(foreach lib,$(program_LIBRARIES),-l$(lib))
 
 CXXFLAGS += -g -O0
 
-ifeq ($(OS),$(filter $(OS),osx ios))
-	CXXFLAGS += -stdlib=libc++
-	LDFLAGS +=
-endif
-
 .PHONY: all clean distclean
 
-all: submodule_check $(program_NAME)
+all: $(program_NAME)
 
 %.o: %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -x c++ -MM -MT $@ -MF $(patsubst %.o,%.dep,$@) $<
@@ -44,24 +51,13 @@ all: submodule_check $(program_NAME)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -x objective-c++ -MM -MT $@ -MF $(patsubst %.o,%.dep,$@) $<
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -x objective-c++ -c -o $@ $<
 
-submodule_pull:
-	$(MAKE) -f Makefile.git submodule_pull
-
-submodule_update:
-	$(MAKE) -f Makefile.git submodule_update
-
-submodule_check:
-	$(MAKE) -f Makefile.git submodule_check
-
-submodules:
-	$(MAKE) -f Makefile.git submodules
-
 $(program_NAME): $(program_OBJS)
 	$(LINK.cc) $(program_OBJS) -o $(program_NAME)
 
 clean:
 	@- $(RM) $(program_NAME)
-	@- $(RM) $(program_OBJS)
+	@- $(RM) $(shell find test -type f -name '*.o')
+	@- $(RM) $(shell find test -type f -name '*.dep')
 
 distclean: clean
 

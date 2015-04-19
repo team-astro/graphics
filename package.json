@@ -14,5 +14,8 @@
   "dependencies": {
     "team-astro/astro": "develop",
     "team-astro/io": "develop"
+  },
+  "development": {
+    "silentbicycle/greatest": "*"
   }
 }

@@ -3,4 +3,5 @@
 *.d
 *.lib
 *.dep
-gamma-test
+deps
+astro-graphics-test

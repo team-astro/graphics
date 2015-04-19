@@ -1,20 +1,24 @@
 /**
-* Copyright 2015 Matt Rudder. All rights reserved.
+* Copyright 2015 Team Astro. All rights reserved.
 */
 
-#include <gamma/application.h>
-using namespace mu;
-using namespace gma;
+#include <astro-graphics/application.h>
 
-TEST_CASE("App startup and shutdown", "[mu::application]")
-{
+using namespace astro;
+using namespace astro::graphics;
+
+TEST app_startup_and_shutdown() {
   // TODO: Map to flux::reflect types for storage on disk.
   memory_pool pool = {};
-  uintptr memorySize = mu_megabytes(16);
+  uintptr memorySize = astro_megabytes(16);
   initialize_memory_pool(&pool, memorySize, (uint8*)malloc(memorySize));
 
   application* app = create_application(&pool);
-  REQUIRE(app != nullptr);
+  ASSERT(app != nullptr);
 
   dispose_application(app);
+
+  PASS();
 }
+
+SUITE(application_tests) { RUN_TEST(app_startup_and_shutdown); }

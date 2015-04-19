@@ -1,11 +1,8 @@
 /**
-* Copyright 2015 Matt Rudder. All rights reserved.
+* Copyright 2015 Team Astro. All rights reserved.
 */
 
 #include <stdio.h>
 
-#define GAMMA_IMPLEMENTATION
-#include <gamma/window.h>
-
-// #define CATCH_CONFIG_MAIN
-// #include <catch.hpp>
+#define ASTRO_IMPLEMENTATION
+#include <astro-graphics/window.h>

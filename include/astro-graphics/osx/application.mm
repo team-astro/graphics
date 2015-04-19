@@ -1,20 +1,22 @@
 
-#include <mu/mu.h>
-#include <mu/memory.h>
+#include <astro/astro.h>
+#include <astro/memory.h>
 
 #import <Cocoa/Cocoa.h>
 
-@interface MuApplication : NSApplication<NSApplicationDelegate>
+@interface AstroApplication : NSApplication<NSApplicationDelegate>
 - (id)init;
 - (void)runOnce;
-@property mu::application* muApplication;
+@property astro::graphics::application* astroApplication;
 @end
 
-namespace mu
+namespace astro
+{
+namespace graphics
 {
   struct osx_application : application
   {
-    MuApplication* ns_app;
+    AstroApplication* ns_app;
   };
 
   static void
@@ -39,10 +41,10 @@ namespace mu
     Class principalClass =
       NSClassFromString([infoDictionary objectForKey:@"NSPrincipalClass"]);
     // NSAssert([principalClass respondsToSelector:@selector(sharedApplication)],
-    //  @"Principal class must implement sharedApplication.");
+    //  @"Principal class astrost implement sharedApplication.");
     NSApplication *applicationObject = [principalClass sharedApplication];
-    app->ns_app = (MuApplication*) applicationObject;
-    [app->ns_app setMuApplication:app];
+    app->ns_app = (AstroApplication*) applicationObject;
+    [app->ns_app setAstroApplication:app];
 
     NSString *mainNibName = [infoDictionary objectForKey:@"NSMainNibFile"];
     if (mainNibName)
@@ -99,8 +101,9 @@ namespace mu
     return push_string(pool, [str UTF8String]);
   }
 }
+}
 
-@implementation MuApplication
+@implementation AstroApplication
 - (id)init
 {
   self = [super init];
@@ -152,7 +155,7 @@ namespace mu
   [NSFontManager sharedFontManager];
 
   // Because activation policy has just been set to behave like a real
-  // application, that policy must be reset on exit to prevent, among other
+  // application, that policy astrost be reset on exit to prevent, among other
   // things, the menubar created here from remaining on screen.
   // atexit_b(^ {
   //     [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
@@ -173,13 +176,14 @@ namespace mu
   [appMenuItem setSubmenu:appMenu];
   [NSApp setMainMenu:menubar];
 
-  auto mu_app = [self muApplication];
-  mu_app->on_startup(mu_app);
+  auto astro_app = [self astroApplication];
+  astro_app->on_startup(astro_app);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-  mu_app->on_shutdown(mu_app);
+  auto astro_app = [self astroApplication];
+  astro_app->on_shutdown(astro_app);
 }
 
 // - (void)applicationWillFinishLaunching:(NSNotification *)aNotification { }
