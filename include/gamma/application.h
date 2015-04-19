@@ -8,7 +8,7 @@
 #include <mu/mu.h>
 #include <mu/memory.h>
 
-namespace mu
+namespace gma
 {
   struct application
   {

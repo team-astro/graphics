@@ -9,7 +9,7 @@ using namespace mu;
 
 namespace gamma
 {
-  struct osx_window : window
+  struct osx_window : public window
   {
     NSWindow* ns_window;
     GammaRenderView* view;
