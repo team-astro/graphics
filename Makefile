@@ -1,4 +1,5 @@
 UNAME := $(shell uname)
+CWD := $(shell pwd)
 ifeq ($(UNAME),$(filter $(UNAME),Linux Darwin))
 	ifeq ($(UNAME),$(filter $(UNAME),Darwin))
 		XCODE_BASE=$(shell xcode-select -p)
@@ -29,7 +30,7 @@ program_SRCS += $(shell find test/$(OS) -type f \( -name "*.cpp" -or -name "*.mm
 program_OBJS := ${program_SRCS:.cpp=.o}
 program_OBJS := ${program_OBJS:.mm=.o}
 program_DEPS := ${program_OBJS:.o=.dep}
-program_INCLUDE_DIRS := include deps
+program_INCLUDE_DIRS := include deps $(CWD)/../astro/include
 program_LIBRARY_DIRS :=
 program_LIBRARIES :=
 
