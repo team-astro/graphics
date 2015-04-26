@@ -9,9 +9,9 @@ using namespace astro::graphics;
 
 TEST app_startup_and_shutdown() {
   // TODO: Map to flux::reflect types for storage on disk.
-  memory_pool pool = {};
+  memory_stack pool = {};
   uintptr memorySize = ASTRO_MB(16);
-  initialize_memory_pool(&pool, memorySize, (uint8*)malloc(memorySize));
+  initialize_memory_stack(&pool, memorySize, (uint8*)malloc(memorySize));
 
   application* app = create_application(&pool);
   ASSERT(app != nullptr);

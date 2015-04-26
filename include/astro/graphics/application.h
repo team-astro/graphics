@@ -28,20 +28,20 @@ namespace graphics
   struct application
   {
     bool32 is_running;
-    astro::memory_pool* pool;
+    astro::memory_stack* stack;
     window_list* windows;
 
     void (*on_startup)(application* app);
     void (*on_shutdown)(application* app);
   };
 
-  application* create_application(astro::memory_pool* pool);
+  application* create_application(astro::memory_stack* stack);
   void update_application(application* app);
   void quit_application(application* app);
   void dispose_application(application* app);
 
   void set_clipboard_text(const char* text);
-  const char* get_clipboard_text(astro::memory_pool* pool);
+  const char* get_clipboard_text(astro::memory_stack* stack);
 }
 }
 #if defined(ASTRO_IMPLEMENTATION)

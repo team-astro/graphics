@@ -23,7 +23,7 @@ namespace graphics
   null_app_event(application* app) { }
 
   application*
-  create_application(memory_pool* pool)
+  create_application(memory_stack* stack)
   {
     if (NSAppKitVersionNumber < NSAppKitVersionNumber10_7)
     {
@@ -31,8 +31,8 @@ namespace graphics
       exit(EXIT_FAILURE);
     }
 
-    osx_application* app = push_struct<osx_application>(pool);
-    app->pool = pool;
+    osx_application* app = push_struct<osx_application>(stack);
+    app->stack = stack;
     app->on_startup = null_app_event;
     app->on_shutdown = null_app_event;
 
@@ -93,10 +93,10 @@ namespace graphics
   }
 
   const char*
-  get_clipboard_text(memory_pool* pool)
+  get_clipboard_text(memory_stack* stack)
   {
     NSString* str = [[NSPasteboard generalPasteboard] stringForType:NSStringPboardType];
-    return push_string(pool, [str UTF8String]);
+    return push_string(stack, [str UTF8String]);
   }
 }
 }

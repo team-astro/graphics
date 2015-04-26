@@ -420,9 +420,9 @@ namespace graphics
                 uint16 width,
                 uint16 height)
   {
-    osx_window* window = push_struct<osx_window>(app->pool);
+    osx_window* window = push_struct<osx_window>(app->stack);
     *window = {};
-    window->title = push_string(app->pool, title);
+    window->title = push_string(app->stack, title);
     window->width = width;
     window->height = height;
     window->on_render = null_on_render;
@@ -430,7 +430,7 @@ namespace graphics
     window->on_mouse_change = null_on_mouse_change;
     window->on_touch_change = null_on_touch_change;
 
-    push_list(app->pool, &app->windows);
+    push_list(app->stack, &app->windows);
     app->windows->window = window;
 
     AstroWindowDelegate* delegate = [[AstroWindowDelegate alloc] init];
