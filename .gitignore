@@ -3,5 +3,6 @@
 *.d
 *.lib
 *.dep
+.linter-clang-flags
 deps
-astro-graphics-test
+astro-graphics-tests

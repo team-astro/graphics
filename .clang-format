@@ -1,0 +1,24 @@
+# Allow putting all parameters of a function declaration onto the next line
+# even if BinPackParameters is false.
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# If false, a function call’s or function definition’s parameters will
+# either all be on the same line or will have one line each.
+BinPackParameters: false
+BinPackArguments: false
+
+# If true, indent when breaking function declarations which are not also
+# definitions after the type.
+IndentFunctionDeclarationAfterType: false
+AlwaysBreakAfterDefinitionReturnType: true
+
+AlignAfterOpenBracket: true
+
+UseTab: Never
+IndentWidth: 2
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 80

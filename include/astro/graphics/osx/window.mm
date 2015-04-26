@@ -5,7 +5,7 @@ using namespace astro;
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl3.h>
 
-@class GammaRenderView;
+@class AstroRenderView;
 
 namespace astro
 {
@@ -14,7 +14,7 @@ namespace graphics
   struct osx_window : public window
   {
     NSWindow* ns_window;
-    GammaRenderView* view;
+    AstroRenderView* view;
     NSEventModifierFlags lastKeyFlags;
   };
 }
@@ -121,17 +121,17 @@ handle_touch_change(osx_window* window, NSEvent* e)
   window->on_touch_change(window, result);
 }
 
-@interface GammaRenderView : NSOpenGLView
+@interface AstroRenderView : NSOpenGLView
 {
 @public
   CVDisplayLinkRef displayLink;
 }
-@property osx_window* gammaWindow;
+@property osx_window* ourWindow;
 - (instancetype)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format platformWindow:(osx_window*)window;
 @end
 
-@interface GammaWindowDelegate : NSObject <NSWindowDelegate>
-@property osx_window* gammaWindow;
+@interface AstroWindowDelegate : NSObject <NSWindowDelegate>
+@property osx_window* ourWindow;
 @end
 
 static CVReturn
@@ -149,13 +149,13 @@ DisplayLinkCallback(CVDisplayLinkRef,
   return kCVReturnSuccess;
 }
 
-@implementation GammaRenderView
-- (instancetype)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format platformWindow:(osx_window*)gammaWindow
+@implementation AstroRenderView
+- (instancetype)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format platformWindow:(osx_window*)ourWindow
 {
   self = [super initWithFrame:frameRect pixelFormat:format];
   if (self)
   {
-    self.gammaWindow = gammaWindow;
+    self.ourWindow = ourWindow;
     [self setAcceptsTouchEvents:YES];
     [self setWantsRestingTouches:YES];
   }
@@ -165,130 +165,130 @@ DisplayLinkCallback(CVDisplayLinkRef,
 
 - (BOOL)acceptsFirstResponder
 {
-  NSLog(@"GammaRenderView: acceptsFirstResponder");
+  NSLog(@"AstroRenderView: acceptsFirstResponder");
   return YES;
 }
 
 - (BOOL)becomeFirstResponder
 {
-  NSLog(@"GammaRenderView: becomeFirstResponder");
+  NSLog(@"AstroRenderView: becomeFirstResponder");
   return YES;
 }
 
 - (BOOL)resignFirstResponder
 {
-  NSLog(@"GammaRenderView: resignFirstResponder");
+  NSLog(@"AstroRenderView: resignFirstResponder");
   return YES;
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent
 {
-  NSLog(@"GammaRenderView: acceptsFirstMouse");
+  NSLog(@"AstroRenderView: acceptsFirstMouse");
   return YES;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)scrollWheel:(NSEvent *)theEvent {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)otherMouseUp:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)otherMouseDragged:(NSEvent *)theEvent
 {
-  handle_mouse_change(self.gammaWindow, theEvent);
+  handle_mouse_change(self.ourWindow, theEvent);
 }
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-  handle_key_change(self.gammaWindow, theEvent);
+  handle_key_change(self.ourWindow, theEvent);
 }
 
 - (void)keyUp:(NSEvent *)theEvent
 {
-  handle_key_change(self.gammaWindow, theEvent);
+  handle_key_change(self.ourWindow, theEvent);
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent
 {
-  handle_key_change(self.gammaWindow, theEvent);
+  handle_key_change(self.ourWindow, theEvent);
 }
 
 - (void)touchesBeganWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)touchesMovedWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)touchesEndedWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)touchesCancelledWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)rotateWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)swipeWithEvent:(NSEvent *)theEvent
 {
-  handle_touch_change(self.gammaWindow, theEvent);
+  handle_touch_change(self.ourWindow, theEvent);
 }
 
 - (void)prepareOpenGL
@@ -297,11 +297,11 @@ DisplayLinkCallback(CVDisplayLinkRef,
   [[self openGLContext] setValues:&swapInterval
                      forParameter:NSOpenGLCPSwapInterval];
 
-  GammaWindowDelegate* windowDelegate = (GammaWindowDelegate*)self.window.delegate;
+  AstroWindowDelegate* windowDelegate = (AstroWindowDelegate*)self.window.delegate;
 
   CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
   CVDisplayLinkSetOutputCallback(
-      displayLink, DisplayLinkCallback, (__bridge void *)windowDelegate.gammaWindow);
+      displayLink, DisplayLinkCallback, (void *)windowDelegate.ourWindow);
 
   CGLContextObj context = [[self openGLContext] CGLContextObj];
   CGLPixelFormatObj pixelFormat = [[self pixelFormat] CGLPixelFormatObj];
@@ -313,19 +313,19 @@ DisplayLinkCallback(CVDisplayLinkRef,
 }
 @end
 
-@implementation GammaWindowDelegate
-@synthesize gammaWindow;
+@implementation AstroWindowDelegate
+@synthesize ourWindow;
 
 - (void)windowDidResize:(NSNotification *)notification
 {
-  draw_window(gammaWindow, 0, true);
+  draw_window(ourWindow, 0, true);
 }
 
 - (void)windowDidChangeBackingProperties:(NSNotification *)notification
 {
   // NOTE(matt): This handles moving between screens with different backing scale factor (retina/non-retina)
   // TODO(matt): Pass this notification out to UI code to update scale? May be unnecessary.
-  draw_window(gammaWindow, 0, true);
+  draw_window(ourWindow, 0, true);
 }
 
 // - (NSRect)window:(NSWindow *)window willPositionSheet:(NSWindow *)sheet
@@ -433,8 +433,8 @@ namespace graphics
     push_list(app->pool, &app->windows);
     app->windows->window = window;
 
-    GammaWindowDelegate* delegate = [[GammaWindowDelegate alloc] init];
-    delegate.gammaWindow = window;
+    AstroWindowDelegate* delegate = [[AstroWindowDelegate alloc] init];
+    delegate.ourWindow = window;
 
     NSRect frame = NSMakeRect(0, 0, width, height);
     NSUInteger windowMask = NSTitledWindowMask | NSClosableWindowMask |
@@ -471,7 +471,7 @@ namespace graphics
         [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
 
     window->view =
-        [[GammaRenderView alloc] initWithFrame:frame pixelFormat:pixelFormat platformWindow:window];
+        [[AstroRenderView alloc] initWithFrame:frame pixelFormat:pixelFormat platformWindow:window];
     [window->view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     [window->view setWantsBestResolutionOpenGLSurface:YES];
 

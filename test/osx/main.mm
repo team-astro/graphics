@@ -5,4 +5,4 @@
 #include <stdio.h>
 
 #define ASTRO_IMPLEMENTATION
-#include <astro-graphics/window.h>
+#include <astro/graphics/window.h>

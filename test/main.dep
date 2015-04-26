@@ -1,4 +1,0 @@
-test/main.o: test/main.cpp deps/greatest/greatest.h \
-  test/application_tests.h include/astro-graphics/application.h \
-  deps/astro/astro.h deps/astro/config.h deps/astro/platform.h \
-  deps/astro/macros.h deps/astro/types.h deps/astro/memory.h

@@ -2,7 +2,7 @@
 * Copyright 2015 Team Astro. All rights reserved.
 */
 
-#include <astro-graphics/application.h>
+#include <astro/graphics/application.h>
 
 using namespace astro;
 using namespace astro::graphics;

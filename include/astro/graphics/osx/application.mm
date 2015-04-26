@@ -76,8 +76,6 @@ namespace graphics
   void
   dispose_application(application* app)
   {
-    osx_application* osx_app = (osx_application*)app;
-    [osx_app->ns_app dealloc];
   }
 
   void

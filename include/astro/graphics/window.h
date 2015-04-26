@@ -2,11 +2,11 @@
 * Copyright 2015 Team Astro. All rights reserved.
 */
 
-#ifndef GAMMA_WINDOW
-#define GAMMA_WINDOW
+#ifndef ASTRO_GFX_WINDOW
+#define ASTRO_GFX_WINDOW
 
 #include <astro/astro.h>
-#include <astro-graphics/application.h>
+#include <astro/graphics/application.h>
 
 namespace astro
 {
@@ -85,11 +85,9 @@ namespace graphics
 }
 }
 
-// TODO: Figure out the best way to structure this to work with clib.
-// clib likes to flatten directory hierarchies. :(
 #if defined(ASTRO_IMPLEMENTATION)
 # if ASTRO_PLATFORM_OSX
-#include <astro-graphics/osx/window.mm>
+#include <astro/graphics/osx/window.mm>
 # endif
 #endif
 
