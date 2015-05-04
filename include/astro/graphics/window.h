@@ -67,6 +67,7 @@ namespace graphics
     real32 pixel_ratio;
     uint16 width;
     uint16 height;
+    void* context;
 
     void (*on_render)(window* win, real32 dt);
     void (*on_key_change)(window* win, key_state state);

@@ -6,3 +6,4 @@
 .linter-clang-flags
 deps
 astro-graphics-tests
+astro-graphics-tests.app

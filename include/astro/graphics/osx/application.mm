@@ -23,7 +23,7 @@ namespace graphics
   null_app_event(application* app) { }
 
   application*
-  create_application(memory_stack* stack)
+  create_application(uintptr heap_size)
   {
     if (NSAppKitVersionNumber < NSAppKitVersionNumber10_7)
     {
@@ -31,10 +31,20 @@ namespace graphics
       exit(EXIT_FAILURE);
     }
 
-    osx_application* app = push_struct<osx_application>(stack);
-    app->stack = stack;
+    uint8* heap = (uint8*)malloc(heap_size);
+    if (!heap)
+    {
+      exit(EXIT_FAILURE);
+    }
+
+    osx_application* app = (osx_application*) heap;
     app->on_startup = null_app_event;
     app->on_shutdown = null_app_event;
+
+    heap += sizeof(osx_application);
+    heap_size -= sizeof(osx_application);
+
+    initialize_memory_stack(&app->stack, heap_size, heap);
 
     // http://www.cocoawithlove.com/2009/01/demystifying-nsapplication-by.html
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
@@ -69,6 +79,8 @@ namespace graphics
   void
   quit_application(application* app)
   {
+    app->is_running = false;
+
     osx_application* osx_app = (osx_application*)app;
     [osx_app->ns_app terminate:osx_app->ns_app];
   }
@@ -76,6 +88,7 @@ namespace graphics
   void
   dispose_application(application* app)
   {
+    app->is_running = false;
   }
 
   void

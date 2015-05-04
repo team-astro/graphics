@@ -28,14 +28,15 @@ namespace graphics
   struct application
   {
     bool32 is_running;
-    astro::memory_stack* stack;
+    astro::memory_stack stack;
     window_list* windows;
+    void* context;
 
     void (*on_startup)(application* app);
     void (*on_shutdown)(application* app);
   };
 
-  application* create_application(astro::memory_stack* stack);
+  application* create_application(uintptr heap_size);
   void update_application(application* app);
   void quit_application(application* app);
   void dispose_application(application* app);

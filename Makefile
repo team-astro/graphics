@@ -33,6 +33,7 @@ program_DEPS := ${program_OBJS:.o=.dep}
 program_INCLUDE_DIRS := include deps $(CWD)/../astro/include
 program_LIBRARY_DIRS :=
 program_LIBRARIES :=
+program_TEMPLATE := test/$(OS)/Shell.app
 
 CXXFLAGS += $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
 LDFLAGS += $(foreach libdir,$(program_LIBRARY_DIRS),-L$(libdir))
@@ -42,7 +43,7 @@ CXXFLAGS += -g -O0
 
 .PHONY: all clean distclean
 
-all: generate_linter_flags $(program_NAME)
+all: generate_linter_flags $(program_NAME).app
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -x c++ -MM -MT $@ -MF $(patsubst %.o,%.dep,$@) $<
@@ -55,11 +56,17 @@ all: generate_linter_flags $(program_NAME)
 $(program_NAME): $(program_OBJS)
 	$(LINK.cc) $(LDFLAGS) $(program_OBJS) -o $(program_NAME)
 
+$(program_NAME).app: $(program_NAME)
+	rm -rf $@
+	cp -R $(program_TEMPLATE) $@
+	cp $(program_NAME) $@/Contents/MacOS/$(program_NAME)
+
 generate_linter_flags: Makefile
 	echo "$(CXXFLAGS) $(OBJCXXFLAGS)" | tr ' ' '\n' > .linter-clang-flags
 
 clean:
 	@- $(RM) $(program_NAME)
+	@- $(RM) -rf $(program_NAME).app
 	@- $(RM) $(shell find test -type f -name '*.o')
 	@- $(RM) $(shell find test -type f -name '*.dep')
 
