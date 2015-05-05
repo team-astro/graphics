@@ -23,7 +23,7 @@ void app_harness_destroy(void* env)
 void on_key_change(window* win, key_state state)
 {
   application* app = (application*)win->context;
-  if (state.code == 53)
+  if (state.code == key_code::Escape) // TODO: Replace with keycode enum.
   {
     app->is_running = false;
   }

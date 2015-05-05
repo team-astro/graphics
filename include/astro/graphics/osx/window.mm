@@ -35,7 +35,7 @@ handle_key_change(osx_window* window, NSEvent* e)
   bool32 flagsKeyDown = oldFlags == 0 && newFlags != 0;
 
   result.key_pressed = (e.type == NSFlagsChanged && flagsKeyDown) || e.type == NSKeyDown;
-  result.code = e.keyCode;
+  result.code = (key_code) e.keyCode;
 
   if (e.type == NSKeyDown || e.type == NSKeyUp)
   {
