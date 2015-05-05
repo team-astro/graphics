@@ -159,14 +159,14 @@ namespace graphics
     uint8 click_count;
   };
 
-  enum touch_phase
+  enum class touch_phase
   {
-    TP_BEGAN,
-    TP_MOVED,
-    TP_STATIONARY,
-    TP_ENDED,
-    TP_CANCELLED,
-    TP_TOUCHING = TP_BEGAN | TP_MOVED | TP_STATIONARY,
+    Began,
+    Moved,
+    Stationary,
+    Ended,
+    Cancelled,
+    Touching = Began | Moved | Stationary,
   };
 
   struct touch_info
