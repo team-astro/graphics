@@ -20,12 +20,12 @@ solution "astro.graphics"
   startproject "astro.graphics.tests"
 
 ASTRO_GFX_DIR = path.getabsolute("..")
-local ASTRO_GFX_BUILD_DIR = path.join(ASTRO_DIR, ".build")
-local ASTRO_GFX_THIRD_PARTY_DIR = path.join(ASTRO_DIR, "thirdparty")
+local ASTRO_GFX_BUILD_DIR = path.join(ASTRO_GFX_DIR, ".build")
+local ASTRO_GFX_THIRD_PARTY_DIR = path.join(ASTRO_GFX_DIR, "thirdparty")
 ASTRO_DIR = path.getabsolute(path.join(ASTRO_GFX_DIR, "../astro"))
 
 dofile (path.join(ASTRO_DIR, "scripts/toolchain.lua"))
-if not toolchain(ASTRO_BUILD_DIR, ASTRO_THIRD_PARTY_DIR) then
+if not toolchain(ASTRO_GFX_BUILD_DIR, ASTRO_GFX_THIRD_PARTY_DIR) then
   return
 end
 

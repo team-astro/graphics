@@ -48,6 +48,8 @@ namespace graphics
 #if defined(ASTRO_IMPLEMENTATION)
 # if ASTRO_PLATFORM_OSX
 #include <astro/graphics/osx/application.mm>
+# else
+# error "astro::graphics::application not defined!"
 # endif
 #endif
 

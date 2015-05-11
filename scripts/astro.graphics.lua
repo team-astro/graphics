@@ -34,7 +34,11 @@ project "astro.graphics"
   files {
     path.join(ASTRO_GFX_DIR, "include/**.h"),
   }
-  
+
+  defines {
+    "ASTRO_IMPLEMENTATION=1"
+  }
+
   configuration {}
 
   copyLib()

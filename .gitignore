@@ -1,10 +1,4 @@
-*.o
-*.a
-*.d
-*.lib
-*.dep
 .linter-clang-flags
-deps
-build
-astro-graphics-tests
-astro-graphics-tests.app
+.build
+.sdf
+.suo

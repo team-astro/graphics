@@ -210,6 +210,8 @@ namespace graphics
 #if defined(ASTRO_IMPLEMENTATION)
 # if ASTRO_PLATFORM_OSX
 #include <astro/graphics/osx/window.mm>
+# else
+# error "astro::graphics::window not defined!"
 # endif
 #endif
 
