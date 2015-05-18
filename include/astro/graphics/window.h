@@ -188,8 +188,10 @@ namespace graphics
     real32 pixel_ratio;
     uint16 width;
     uint16 height;
+    application* app;
     void* context;
 
+    // TODO: Render callback should take context.
     void (*on_render)(window* win, real32 dt);
     void (*on_key_change)(window* win, key_state state);
     void (*on_mouse_change)(window* win, mouse_state state);
@@ -206,13 +208,5 @@ namespace graphics
   void draw_window(window* window, real32 delta_time, bool32 resize);
 }
 }
-
-#if defined(ASTRO_IMPLEMENTATION)
-# if ASTRO_PLATFORM_OSX
-#include <astro/graphics/osx/window.mm>
-# else
-# error "astro::graphics::window not defined!"
-# endif
-#endif
 
 #endif

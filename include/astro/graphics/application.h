@@ -28,7 +28,7 @@ namespace graphics
   struct application
   {
     bool32 is_running;
-    astro::memory_stack stack;
+    memory_stack stack;
     window_list* windows;
     void* context;
 
@@ -42,15 +42,8 @@ namespace graphics
   void dispose_application(application* app);
 
   void set_clipboard_text(const char* text);
-  const char* get_clipboard_text(astro::memory_stack* stack);
+  const char* get_clipboard_text(memory_stack* stack);
 }
 }
-#if defined(ASTRO_IMPLEMENTATION)
-# if ASTRO_PLATFORM_OSX
-#include <astro/graphics/osx/application.mm>
-# else
-# error "astro::graphics::application not defined!"
-# endif
-#endif
 
 #endif

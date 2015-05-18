@@ -20,9 +20,10 @@ solution "astro.graphics"
   startproject "astro.graphics.tests"
 
 ASTRO_GFX_DIR = path.getabsolute("..")
-local ASTRO_GFX_BUILD_DIR = path.join(ASTRO_GFX_DIR, ".build")
-local ASTRO_GFX_THIRD_PARTY_DIR = path.join(ASTRO_GFX_DIR, "thirdparty")
+ASTRO_GFX_BUILD_DIR = path.join(ASTRO_GFX_DIR, ".build")
+ASTRO_GFX_THIRD_PARTY_DIR = path.join(ASTRO_GFX_DIR, "thirdparty")
 ASTRO_DIR = path.getabsolute(path.join(ASTRO_GFX_DIR, "../astro"))
+ASTRO_THIRD_PARTY_DIR = path.join(ASTRO_DIR, "thirdparty")
 
 dofile (path.join(ASTRO_DIR, "scripts/toolchain.lua"))
 if not toolchain(ASTRO_GFX_BUILD_DIR, ASTRO_GFX_THIRD_PARTY_DIR) then
@@ -45,12 +46,18 @@ project ("astro.graphics.tests")
   includedirs {
     path.join(ASTRO_DIR, "include"),
     path.join(ASTRO_GFX_DIR, "include"),
-    path.join(ASTRO_GFX_DIR, "thirdparty"),
-    path.join(ASTRO_GFX_DIR, "test")
+    path.join(ASTRO_GFX_DIR, "test"),
+    ASTRO_GFX_THIRD_PARTY_DIR,
+    ASTRO_THIRD_PARTY_DIR
+  }
+
+  files {
+    path.join(ASTRO_GFX_DIR, "test/*.cpp"),
+    path.join(ASTRO_GFX_DIR, "test/*.h"),
   }
 
   links {
-    "astro.graphics",
+    "astro.graphics"
   }
 
   configuration { "osx" }
@@ -70,6 +77,9 @@ project ("astro.graphics.tests")
       "-framework UIKit",
       "-framework QuartzCore",
     }
+
+  configuration { "windows" }
+
 
   configuration {}
 

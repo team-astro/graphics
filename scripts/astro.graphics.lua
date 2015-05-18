@@ -3,13 +3,14 @@ project "astro.graphics"
   kind "StaticLib"
 
   includedirs {
-    path.join(ASTRO_GFX_DIR, "thirdparty"),
+    ASTRO_GFX_THIRD_PARTY_DIR,
+    path.join(ASTRO_GFX_THIRD_PARTY_DIR, "khronos"),
     path.join(ASTRO_DIR, "include"),
   }
 
   configuration { "ios*" }
     files {
-      path.join(ASTRO_GFX_DIR, "include/**/ios/**")
+      path.join(ASTRO_GFX_DIR, "src/ios/**")
     }
 
   configuration { "osx" }
@@ -17,7 +18,12 @@ project "astro.graphics"
       "Cocoa.framework"
     }
     files {
-      path.join(ASTRO_GFX_DIR, "include/**/osx/**")
+      path.join(ASTRO_GFX_DIR, "src/osx/**")
+    }
+
+  configuration { "windows" }
+    files {
+      path.join(ASTRO_GFX_DIR, "src/win32/**")
     }
 
   configuration { "x64", "vs* or mingw*" }

@@ -1,3 +1,7 @@
+/**
+* Copyright 2015 Team Astro. All rights reserved.
+*/
+
 #include <astro/astro.h>
 #include <astro/memory.h>
 using namespace astro;
@@ -429,6 +433,7 @@ namespace graphics
     window->on_key_change = null_on_key_change;
     window->on_mouse_change = null_on_mouse_change;
     window->on_touch_change = null_on_touch_change;
+    window->app = app;
 
     push_list(&app->stack, &app->windows);
     app->windows->window = window;
