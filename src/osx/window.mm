@@ -6,8 +6,11 @@
 #include <astro/memory.h>
 using namespace astro;
 
+#import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl3.h>
+
+#include <astro/graphics/window.h>
 
 @class AstroRenderView;
 
@@ -33,7 +36,7 @@ handle_key_change(osx_window* window, NSEvent* e)
 
   auto newFlags = ~window->lastKeyFlags & e.modifierFlags;
   auto oldFlags = window->lastKeyFlags & ~e.modifierFlags;
-  auto changed = newFlags | oldFlags;
+  //auto changed = newFlags | oldFlags;
   window->lastKeyFlags = e.modifierFlags;
 
   bool32 flagsKeyDown = oldFlags == 0 && newFlags != 0;
@@ -46,8 +49,8 @@ handle_key_change(osx_window* window, NSEvent* e)
     result.repeat = e.ARepeat;
     assert(e.characters.length < sizeof(result.characters));
     assert(e.charactersIgnoringModifiers.length < sizeof(result.raw_characters));
-    strncpy(&result.characters[0], e.characters.UTF8String, min(sizeof(result.characters), e.characters.length));
-    strncpy(&result.raw_characters[0], e.charactersIgnoringModifiers.UTF8String, min(sizeof(result.raw_characters), e.charactersIgnoringModifiers.length));
+    strncpy(&result.characters[0], e.characters.UTF8String, min(sizeof(result.characters), (size_t)e.characters.length));
+    strncpy(&result.raw_characters[0], e.charactersIgnoringModifiers.UTF8String, min(sizeof(result.raw_characters), (size_t)e.charactersIgnoringModifiers.length));
   }
 
   window->on_key_change(window, result);
@@ -102,7 +105,7 @@ handle_touch_change(osx_window* window, NSEvent* e)
     NSLog(@"rotate");
     break;
   default:
-    NSLog(@"unknown touch event type: %ld", e.type);
+    NSLog(@"unknown touch event type: %lld", (uint64)e.type);
     break;
   }
 
@@ -113,13 +116,13 @@ handle_touch_change(osx_window* window, NSEvent* e)
 
   printf("touch event - \n");
   touch_info* ti = result.touches;
-  for (int touch_index = 0; touch_index < touch_match.count; ++touch_index, ++ti)
+  for (uint32 touch_index = 0; touch_index < touch_match.count; ++touch_index, ++ti)
   {
     NSTouch* touch = [array objectAtIndex:touch_index];
     ti->index = touch_index; // NOTE(matt): Might not be the same as finger?
     ti->position = { (real32) touch.normalizedPosition.x, (real32) touch.normalizedPosition.y };
     ti->phase = (touch_phase) touch.phase;
-    NSLog(@"  touch %d - identity %@, phase: %ld, pos: (%g, %g)", touch_index, touch.identity, touch.phase, touch.normalizedPosition.x, touch.normalizedPosition.y);
+    NSLog(@"  touch %d - identity %@, phase: %lld, pos: (%g, %g)", touch_index, touch.identity, (uint64)touch.phase, touch.normalizedPosition.x, touch.normalizedPosition.y);
   }
 
   window->on_touch_change(window, result);
@@ -127,14 +130,17 @@ handle_touch_change(osx_window* window, NSEvent* e)
 
 @interface AstroRenderView : NSOpenGLView
 {
-@public
   CVDisplayLinkRef displayLink;
+  osx_window* m_ourWindow;
 }
 @property osx_window* ourWindow;
 - (instancetype)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format platformWindow:(osx_window*)window;
 @end
 
 @interface AstroWindowDelegate : NSObject <NSWindowDelegate>
+{
+  osx_window* m_ourWindow;
+}
 @property osx_window* ourWindow;
 @end
 
@@ -154,6 +160,7 @@ DisplayLinkCallback(CVDisplayLinkRef,
 }
 
 @implementation AstroRenderView
+@synthesize ourWindow = m_ourWindow;
 - (instancetype)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format platformWindow:(osx_window*)ourWindow
 {
   self = [super initWithFrame:frameRect pixelFormat:format];
@@ -185,7 +192,7 @@ DisplayLinkCallback(CVDisplayLinkRef,
   return YES;
 }
 
-- (BOOL)acceptsFirstMouse:(NSEvent*)theEvent
+- (BOOL)acceptsFirstMouse:(NSEvent*)__unused theEvent
 {
   NSLog(@"AstroRenderView: acceptsFirstMouse");
   return YES;
@@ -318,18 +325,18 @@ DisplayLinkCallback(CVDisplayLinkRef,
 @end
 
 @implementation AstroWindowDelegate
-@synthesize ourWindow;
+@synthesize ourWindow = m_ourWindow;
 
-- (void)windowDidResize:(NSNotification *)notification
+- (void)windowDidResize:(NSNotification *)__unused notification
 {
-  draw_window(ourWindow, 0, true);
+  draw_window(m_ourWindow, 0, true);
 }
 
-- (void)windowDidChangeBackingProperties:(NSNotification *)notification
+- (void)windowDidChangeBackingProperties:(NSNotification *)__unused notification
 {
   // NOTE(matt): This handles moving between screens with different backing scale factor (retina/non-retina)
   // TODO(matt): Pass this notification out to UI code to update scale? May be unnecessary.
-  draw_window(ourWindow, 0, true);
+  draw_window(m_ourWindow, 0, true);
 }
 
 // - (NSRect)window:(NSWindow *)window willPositionSheet:(NSWindow *)sheet

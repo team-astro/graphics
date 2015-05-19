@@ -15,7 +15,9 @@ project "astro.graphics"
 
   configuration { "osx" }
     links {
-      "Cocoa.framework"
+      "Cocoa.framework",
+      "CoreVideo.framework",
+      "OpenGL.framework"
     }
     files {
       path.join(ASTRO_GFX_DIR, "src/osx/**")

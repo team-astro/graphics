@@ -63,6 +63,7 @@ project ("astro.graphics.tests")
   configuration { "osx" }
     links {
       "Cocoa.framework",
+      "CoreVideo.framework",
       "OpenGL.framework"
     }
     files {

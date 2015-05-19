@@ -3,8 +3,11 @@
 */
 
 #include <stdio.h>
+
+#define __STDC_VERSION__ 199901L
 #include <greatest/greatest.h>
 GREATEST_MAIN_DEFS();
+#undef __STDC_VERSION__
 
 #include <astro/logging.h>
 astro::log_level astro_log_verbosity = astro::log_level::none;

@@ -4,13 +4,17 @@
 
 #include <astro/astro.h>
 #include <astro/memory.h>
+#include <astro/graphics/application.h>
 
 #import <Cocoa/Cocoa.h>
 
 @interface AstroApplication : NSApplication<NSApplicationDelegate>
+{
+  astro::graphics::application* m_theApp;
+}
 - (id)init;
 - (void)runOnce;
-@property astro::graphics::application* astroApplication;
+@property astro::graphics::application* theApp;
 @end
 
 namespace astro
@@ -23,7 +27,7 @@ namespace graphics
   };
 
   static void
-  null_app_event(application* app) { }
+  null_app_event(application* /*app*/) { }
 
   application*
   create_application(uintptr heap_size)
@@ -57,7 +61,7 @@ namespace graphics
     //  @"Principal class astrost implement sharedApplication.");
     NSApplication *applicationObject = [principalClass sharedApplication];
     app->ns_app = (AstroApplication*) applicationObject;
-    [app->ns_app setAstroApplication:app];
+    [app->ns_app setTheApp:app];
 
     NSString *mainNibName = [infoDictionary objectForKey:@"NSMainNibFile"];
     if (mainNibName)
@@ -118,6 +122,7 @@ namespace graphics
 }
 
 @implementation AstroApplication
+@synthesize theApp = m_theApp;
 - (id)init
 {
   self = [super init];
@@ -153,17 +158,17 @@ namespace graphics
   }
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)__unused sender
 {
   return NSTerminateNow;
 }
 
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)app
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)__unused app
 {
   return YES;
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void)applicationDidFinishLaunching:(NSNotification *)__unused aNotification
 {
   [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   [NSFontManager sharedFontManager];
@@ -190,13 +195,13 @@ namespace graphics
   [appMenuItem setSubmenu:appMenu];
   [NSApp setMainMenu:menubar];
 
-  auto astro_app = [self astroApplication];
+  auto astro_app = [self theApp];
   astro_app->on_startup(astro_app);
 }
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification
+- (void)applicationWillTerminate:(NSNotification *)__unused aNotification
 {
-  auto astro_app = [self astroApplication];
+  auto astro_app = [self theApp];
   astro_app->on_shutdown(astro_app);
 }
 
