@@ -2,18 +2,13 @@
 * Copyright 2015 Team Astro. All rights reserved.
 */
 
-#include <astro/graphics/window.h>
 #include <astro/graphics/context.h>
+#include "win32_window.h"
 
 namespace astro
 {
 namespace graphics
 {
-  struct win32_window : public window
-  {
-    HWND handle;
-  };
-
   static WNDCLASSW window_class = {};
 
   void

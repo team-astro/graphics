@@ -16,6 +16,12 @@ namespace graphics
 
   context*
   create_context(window* window);
+
+  void
+  context_make_current(context* context, bool resize);
+
+  void
+  context_flush(context* context);
 }
 }
 

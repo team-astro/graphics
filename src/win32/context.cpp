@@ -4,7 +4,7 @@
 
 #include <astro/astro.h>
 #include <astro/graphics/context.h>
-#include <astro/graphics/window.h>
+#include "win32_window.h"
 
 #define GL_GLEXT_PROTOTYPES
 #include <gl/glcorearb.h>
@@ -34,11 +34,6 @@ namespace graphics
   typedef const char *(WINAPI * PFNWGLGETEXTENSIONSSTRINGEXTPROC) (void);
   typedef BOOL(WINAPI * PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
   typedef HGLRC(WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
-
-  struct win32_window : public window
-  {
-    HWND handle;
-  };
 
   struct win32_context : public context
   {
@@ -142,7 +137,7 @@ namespace graphics
     wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
     wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
     wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-    
+
     if (wglGetExtensionsStringARB != nullptr)
     {
       const char* extensions = (const char*)wglGetExtensionsStringARB(hdc);

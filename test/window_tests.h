@@ -20,13 +20,13 @@ void app_harness_destroy(void* env)
   dispose_application(app);
 }
 
-void on_key_change(window* win, key_state state)
+void on_key_change(window*, key_state)
 {
-  application* app = (application*)win->context;
-  if (state.code == key_code::Escape)
-  {
-    app->is_running = false;
-  }
+  // application* app = (application*)win->context;
+  // if (state.code == key_code::Escape)
+  // {
+  //   app->is_running = false;
+  // }
 }
 
 TEST window_creation(void* env)
@@ -34,7 +34,6 @@ TEST window_creation(void* env)
   application* app = (application*) env;
 
   window* win = create_window(app, "window_creation", 320, 240);
-  win->context = app;
   win->on_key_change = on_key_change;
 
   while (app->is_running)

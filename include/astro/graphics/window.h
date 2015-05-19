@@ -7,6 +7,7 @@
 
 #include <astro/astro.h>
 #include <astro/graphics/application.h>
+#include <astro/graphics/context.h>
 
 namespace astro
 {
@@ -189,7 +190,7 @@ namespace graphics
     uint16 width;
     uint16 height;
     application* app;
-    void* context;
+    context* context;
 
     // TODO: Render callback should take context.
     void (*on_render)(window* win, real32 dt);
