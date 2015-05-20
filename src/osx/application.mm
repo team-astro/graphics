@@ -82,11 +82,12 @@ namespace graphics
     @autoreleasepool
     {
       [NSApp activateIgnoringOtherApps:YES];
-      [NSApp finishLaunching];
 
       [[NSNotificationCenter defaultCenter]
 				postNotificationName:NSApplicationWillFinishLaunchingNotification
 				object:NSApp];
+
+      [NSApp finishLaunching];
 
 			[[NSNotificationCenter defaultCenter]
 				postNotificationName:NSApplicationDidFinishLaunchingNotification
