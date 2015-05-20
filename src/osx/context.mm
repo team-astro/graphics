@@ -109,6 +109,8 @@ handle_key_change(osx_window* window, NSEvent* e)
 {
   key_state result = {};
 
+  log_debug("handle_key_change");
+
   auto newFlags = ~window->lastKeyFlags & e.modifierFlags;
   auto oldFlags = window->lastKeyFlags & ~e.modifierFlags;
   //auto changed = newFlags | oldFlags;
@@ -152,14 +154,14 @@ handle_mouse_change(osx_window* window, NSEvent* e)
     result.click_count = e.clickCount;
   }
 
-  // if (e.type == NSScrollWheel)
-  // {
-  //   printf("wheel - precise: %d, dX: %g, dY: %g\n", e.hasPreciseScrollingDeltas, (real32) e.scrollingDeltaX, (real32) e.scrollingDeltaY);
-  // }
+  if (e.type == NSScrollWheel)
+  {
+    log_debug("wheel - precise: %d, dX: %g, dY: %g\n", e.hasPreciseScrollingDeltas, (real32) e.scrollingDeltaX, (real32) e.scrollingDeltaY);
+  }
 
   window->on_mouse_change(window, result);
 
-  // printf("mouse event - pressed: %d, pos: (%g, %g), wheel: (%g, %g, %g), button: %d, pressure: %g, count: %d\n", result.button_pressed, result.position.x, result.position.y, result.wheel.x, result.wheel.y, result.wheel.z, result.button, result.pressure, result.click_count);
+  log_debug("mouse event - pressed: %d, pos: (%g, %g), wheel: (%g, %g, %g), button: %d, pressure: %g, count: %d\n", result.button_pressed, result.position.x, result.position.y, result.wheel.x, result.wheel.y, result.wheel.z, result.button, result.pressure, result.click_count);
 }
 
 inline void
@@ -189,7 +191,7 @@ handle_touch_change(osx_window* window, NSEvent* e)
 
   assert(touch_match.count < sizeof(result.touches));
 
-  printf("touch event - \n");
+  log_debug("touch event -");
   touch_info* ti = result.touches;
   for (uint32 touch_index = 0; touch_index < touch_match.count; ++touch_index, ++ti)
   {

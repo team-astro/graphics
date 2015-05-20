@@ -8,13 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AstroApplication : NSApplication<NSApplicationDelegate>
+@interface AppDelegate : NSObject<NSApplicationDelegate>
 {
-  astro::graphics::application* m_theApp;
+@public
+  astro::graphics::application* app;
 }
++ (AppDelegate*)sharedDelegate;
 - (id)init;
-- (void)runOnce;
-@property astro::graphics::application* theApp;
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender;
+- (bool)applicationHasTerminated;
 @end
 
 namespace astro
@@ -23,7 +25,6 @@ namespace graphics
 {
   struct osx_application : application
   {
-    AstroApplication* ns_app;
   };
 
   static void
@@ -59,16 +60,19 @@ namespace graphics
       NSClassFromString([infoDictionary objectForKey:@"NSPrincipalClass"]);
     // NSAssert([principalClass respondsToSelector:@selector(sharedApplication)],
     //  @"Principal class astrost implement sharedApplication.");
-    NSApplication *applicationObject = [principalClass sharedApplication];
-    app->ns_app = (AstroApplication*) applicationObject;
-    [app->ns_app setTheApp:app];
+    [principalClass sharedApplication];
+    AppDelegate* delegate = [AppDelegate sharedDelegate];
+    [NSApp setDelegate:delegate];
+    [NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
+
+    delegate->app = app;
 
     NSString *mainNibName = [infoDictionary objectForKey:@"NSMainNibFile"];
     if (mainNibName)
     {
       NSNib *mainNib =
         [[NSNib alloc] initWithNibNamed:mainNibName bundle:[NSBundle mainBundle]];
-      [mainNib instantiateWithOwner:applicationObject topLevelObjects:nil];
+      [mainNib instantiateWithOwner:NSApp topLevelObjects:nil];
     }
 
     [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
@@ -77,7 +81,16 @@ namespace graphics
 
     @autoreleasepool
     {
-      [app->ns_app finishLaunching];
+      [NSApp activateIgnoringOtherApps:YES];
+      [NSApp finishLaunching];
+
+      [[NSNotificationCenter defaultCenter]
+				postNotificationName:NSApplicationWillFinishLaunchingNotification
+				object:NSApp];
+
+			[[NSNotificationCenter defaultCenter]
+				postNotificationName:NSApplicationDidFinishLaunchingNotification
+				object:NSApp];
     }
 
     return app;
@@ -86,10 +99,8 @@ namespace graphics
   void
   quit_application(application* app)
   {
-    app->is_running = false;
-
-    osx_application* osx_app = (osx_application*)app;
-    [osx_app->ns_app terminate:osx_app->ns_app];
+    ASTRO_UNUSED(app);
+    [NSApp terminate:NSApp];
   }
 
   void
@@ -101,8 +112,28 @@ namespace graphics
   void
   update_application(application* app)
   {
-    osx_application* osx_app = (osx_application*)app;
-    [osx_app->ns_app runOnce];
+    ASTRO_UNUSED(app);
+    @autoreleasepool
+    {
+      NSEvent *event = nil;
+      do
+      {
+        event =
+          [NSApp
+              nextEventMatchingMask:NSAnyEventMask
+              untilDate:nil
+              inMode:NSDefaultRunLoopMode
+              dequeue:YES];
+
+        if (event)
+        {
+          //NSLog(@"Event: %@", event);
+          [NSApp sendEvent:event];
+          [NSApp updateWindows];
+        }
+      }
+      while (event);
+    }
   }
 
   void
@@ -121,46 +152,29 @@ namespace graphics
 }
 }
 
-@implementation AstroApplication
-@synthesize theApp = m_theApp;
+@implementation AppDelegate
++ (AppDelegate*)sharedDelegate
+{
+  static id instance = [AppDelegate new];
+  return instance;
+}
 - (id)init
 {
   self = [super init];
   if (!self) return nil;
 
-  [self setDelegate:self];
-
   return self;
 }
 
-- (void)runOnce
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)__unused sender
 {
-  @autoreleasepool
-  {
-    NSEvent *event = nil;
-    do
-    {
-      event =
-        [self
-            nextEventMatchingMask:NSAnyEventMask
-            untilDate:nil
-            inMode:NSDefaultRunLoopMode
-            dequeue:YES];
-
-      if (event)
-      {
-        //NSLog(@"Event: %@", event);
-        [self sendEvent:event];
-        [self updateWindows];
-      }
-    }
-    while (event);
-  }
+  app->is_running = false;
+  return NSTerminateCancel;
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)__unused sender
+- (bool)applicationHasTerminated
 {
-  return NSTerminateNow;
+    return !app->is_running;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)__unused app
@@ -170,11 +184,10 @@ namespace graphics
 
 - (void)applicationDidFinishLaunching:(NSNotification *)__unused aNotification
 {
-  [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   [NSFontManager sharedFontManager];
 
   // Because activation policy has just been set to behave like a real
-  // application, that policy astrost be reset on exit to prevent, among other
+  // application, that policy must be reset on exit to prevent, among other
   // things, the menubar created here from remaining on screen.
   // atexit_b(^ {
   //     [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
@@ -195,13 +208,15 @@ namespace graphics
   [appMenuItem setSubmenu:appMenu];
   [NSApp setMainMenu:menubar];
 
-  auto astro_app = [self theApp];
+  AppDelegate* delegate = (AppDelegate*)[NSApp sharedDelegate];
+  auto astro_app = delegate->app;
   astro_app->on_startup(astro_app);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)__unused aNotification
 {
-  auto astro_app = [self theApp];
+  AppDelegate* delegate = (AppDelegate*)[NSApp sharedDelegate];
+  auto astro_app = delegate->app;
   astro_app->on_shutdown(astro_app);
 }
 

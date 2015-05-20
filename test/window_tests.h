@@ -20,13 +20,15 @@ void app_harness_destroy(void* env)
   dispose_application(app);
 }
 
-void on_key_change(window*, key_state)
+void on_key_change(window* win, key_state state)
 {
-  // application* app = (application*)win->context;
-  // if (state.code == key_code::Escape)
-  // {
-  //   app->is_running = false;
-  // }
+  printf("Got key change");
+  application* app = win->app;
+  if (state.code == key_code::Escape)
+  {
+    printf("Got esc!");
+    app->is_running = false;
+  }
 }
 
 TEST window_creation(void* env)
