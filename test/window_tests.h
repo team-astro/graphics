@@ -7,19 +7,6 @@
 using namespace astro;
 using namespace astro::graphics;
 
-void app_harness_create(void* env)
-{
-  application* app = create_application(ASTRO_MB(16));
-
-  *((application**) env) = app;
-}
-
-void app_harness_destroy(void* env)
-{
-  application* app = *((application**) env);
-  dispose_application(app);
-}
-
 void on_key_change(window* win, key_state state)
 {
   printf("Got key change");
@@ -48,9 +35,7 @@ TEST window_creation(void* env)
 
 SUITE(window_tests)
 {
-  application* app = nullptr;
-  SET_SETUP(app_harness_create, &app);
-  SET_TEARDOWN(app_harness_destroy, &app);
-
+  application* app = create_application(ASTRO_MB(16));
   RUN_TEST1(window_creation, app);
+  dispose_application(app);
 }

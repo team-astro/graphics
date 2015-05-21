@@ -22,6 +22,9 @@ project "astro.graphics"
     files {
       path.join(ASTRO_GFX_DIR, "src/osx/**")
     }
+    buildoptions {
+      "-std=c++11"
+    }
 
   configuration { "windows" }
     files {

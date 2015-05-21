@@ -69,6 +69,9 @@ project ("astro.graphics.tests")
     files {
       path.join(ASTRO_GFX_DIR, "test/osx/Shell.app/Contents/Info.plist")
     }
+    buildoptions {
+      "-std=c++11"
+    }
 
   configuration { "ios*" }
     linkoptions {

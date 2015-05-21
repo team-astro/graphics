@@ -33,12 +33,6 @@ namespace graphics
   application*
   create_application(uintptr heap_size)
   {
-    if (NSAppKitVersionNumber < NSAppKitVersionNumber10_7)
-    {
-      NSLog(@"OS X Lion (version 10.7) or later required");
-      exit(EXIT_FAILURE);
-    }
-
     uint8* heap = (uint8*)malloc(heap_size);
     if (!heap)
     {
@@ -54,26 +48,24 @@ namespace graphics
 
     initialize_memory_stack(&app->stack, heap_size, heap);
 
-    // http://www.cocoawithlove.com/2009/01/demystifying-nsapplication-by.html
-    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-    Class principalClass =
-      NSClassFromString([infoDictionary objectForKey:@"NSPrincipalClass"]);
-    // NSAssert([principalClass respondsToSelector:@selector(sharedApplication)],
-    //  @"Principal class astrost implement sharedApplication.");
-    [principalClass sharedApplication];
+    //NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    // Class principalClass =
+    //   NSClassFromString([infoDictionary objectForKey:@"NSPrincipalClass"]);
+
+    [NSApplication sharedApplication];
     AppDelegate* delegate = [AppDelegate sharedDelegate];
+    delegate->app = app;
+
     [NSApp setDelegate:delegate];
     [NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
 
-    delegate->app = app;
-
-    NSString *mainNibName = [infoDictionary objectForKey:@"NSMainNibFile"];
-    if (mainNibName)
-    {
-      NSNib *mainNib =
-        [[NSNib alloc] initWithNibNamed:mainNibName bundle:[NSBundle mainBundle]];
-      [mainNib instantiateWithOwner:NSApp topLevelObjects:nil];
-    }
+    // NSString *mainNibName = [infoDictionary objectForKey:@"NSMainNibFile"];
+    // if (mainNibName)
+    // {
+    //   NSNib *mainNib =
+    //     [[NSNib alloc] initWithNibNamed:mainNibName bundle:[NSBundle mainBundle]];
+    //   [mainNib instantiateWithOwner:NSApp topLevelObjects:nil];
+    // }
 
     [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
 
@@ -209,14 +201,14 @@ namespace graphics
   [appMenuItem setSubmenu:appMenu];
   [NSApp setMainMenu:menubar];
 
-  AppDelegate* delegate = (AppDelegate*)[NSApp sharedDelegate];
+  AppDelegate* delegate = (AppDelegate*)[AppDelegate sharedDelegate];
   auto astro_app = delegate->app;
   astro_app->on_startup(astro_app);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)__unused aNotification
 {
-  AppDelegate* delegate = (AppDelegate*)[NSApp sharedDelegate];
+  AppDelegate* delegate = (AppDelegate*)[AppDelegate sharedDelegate];
   auto astro_app = delegate->app;
   astro_app->on_shutdown(astro_app);
 }
