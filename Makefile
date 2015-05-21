@@ -30,7 +30,8 @@ all:
 	$(GENIE) --gcc=osx gmake
 	$(GENIE) --gcc=ios-arm gmake
 	$(GENIE) --gcc=ios-simulator gmake
-	$(GENIE) xcode4
+	$(GENIE) --xcode=osx xcode4
+	$(GENIE) --xcode=ios xcode4
 
 .build/projects/gmake-android-arm:
 	$(GENIE) --gcc=android-arm gmake

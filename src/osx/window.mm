@@ -14,27 +14,45 @@ using namespace astro;
 using namespace astro;
 using namespace astro::graphics;
 
-@interface AstroWindowDelegate : NSObject <NSWindowDelegate>
+@interface Window : NSObject<NSWindowDelegate>
 {
-  osx_window* m_ourWindow;
+@public
+  osx_window* ourWindow;
 }
-@property osx_window* ourWindow;
++ (Window*)sharedDelegate;
+- (id)init;
 @end
 
 
-@implementation AstroWindowDelegate
-@synthesize ourWindow = m_ourWindow;
+@implementation Window
++ (Window*)sharedDelegate
+{
+  static id window = [Window new];
+  return window;
+}
+
+- (id)init
+{
+  self = [super init];
+  if (!self)
+    return nil;
+
+  ourWindow = nullptr;
+
+  return self;
+}
 
 - (void)windowDidResize:(NSNotification *)__unused notification
 {
-  draw_window(m_ourWindow, 0, true);
+  draw_window(self->ourWindow, 0, true);
 }
 
 - (void)windowDidChangeBackingProperties:(NSNotification *)__unused notification
 {
   // NOTE(matt): This handles moving between screens with different backing scale factor (retina/non-retina)
   // TODO(matt): Pass this notification out to UI code to update scale? May be unnecessary.
-  draw_window(m_ourWindow, 0, true);
+  log_debug("windowDidChangeBackingProperties");
+  draw_window(self->ourWindow, 0, true);
 }
 
 // - (NSRect)window:(NSWindow *)window willPositionSheet:(NSWindow *)sheet
@@ -136,8 +154,8 @@ namespace graphics
     push_list(&app->stack, &app->windows);
     app->windows->window = window;
 
-    AstroWindowDelegate* delegate = [[AstroWindowDelegate alloc] init];
-    delegate.ourWindow = window;
+    Window* delegate = [[Window alloc] init];
+    delegate->ourWindow = window;
 
     NSRect frame = NSMakeRect(0, 0, width, height);
     NSUInteger windowMask = NSTitledWindowMask | NSClosableWindowMask |
@@ -182,6 +200,7 @@ namespace graphics
       win->height = rect.size.height;
 
       win->pixel_ratio = [nswin backingScaleFactor];
+      log_debug("set window pixel ratio to %g", win->pixel_ratio);
       [nswin setTitle:[NSString stringWithFormat:@"%s (%dx%d @ %gx)", osx_win->title, win->width, win->height, win->pixel_ratio]];
     }
 
