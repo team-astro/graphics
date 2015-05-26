@@ -194,7 +194,7 @@ namespace graphics
     context_make_current(win->context, resize);
     if (resize)
     {
-      NSRect rect = [nswin frame];
+      NSRect rect = [[nswin contentView] bounds];
       rect = [nswin convertRectToBacking:rect];
       win->width = rect.size.width;
       win->height = rect.size.height;
