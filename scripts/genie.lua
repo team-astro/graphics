@@ -1,13 +1,11 @@
 ASTRO_GFX_DIR = path.getabsolute("..")
 if BUILD_DIR == nil then
   BUILD_DIR = path.join(ASTRO_GFX_DIR, ".build")
+  solution "astro.graphics"
 end
 ASTRO_GFX_THIRD_PARTY_DIR = path.join(ASTRO_GFX_DIR, "lib")
 local ASTRO_DIR = path.getabsolute(path.join(ASTRO_GFX_DIR, "../astro"))
 
-dofile (path.join(ASTRO_DIR, "scripts/genie.lua"))
-
-solution "astro.graphics"
   configurations {
     "Debug",
     "Release"
@@ -28,6 +26,7 @@ solution "astro.graphics"
   language "C++"
   startproject "astro.graphics.tests"
 
+dofile (path.join(ASTRO_DIR, "scripts/genie.lua"))
 dofile (path.join(ASTRO_DIR, "scripts/toolchain.lua"))
 if not toolchain(BUILD_DIR, ASTRO_GFX_THIRD_PARTY_DIR) then
   return
