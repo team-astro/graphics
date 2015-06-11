@@ -109,7 +109,7 @@ handle_key_change(osx_window* window, NSEvent* e)
 {
   key_state result = {};
 
-  log_debug("handle_key_change");
+  //log_debug("handle_key_change");
 
   auto newFlags = ~window->lastKeyFlags & e.modifierFlags;
   auto oldFlags = window->lastKeyFlags & ~e.modifierFlags;
@@ -156,12 +156,12 @@ handle_mouse_change(osx_window* window, NSEvent* e)
 
   if (e.type == NSScrollWheel)
   {
-    log_debug("wheel - precise: %d, dX: %g, dY: %g\n", e.hasPreciseScrollingDeltas, (real32) e.scrollingDeltaX, (real32) e.scrollingDeltaY);
+    //log_debug("wheel - precise: %d, dX: %g, dY: %g\n", e.hasPreciseScrollingDeltas, (real32) e.scrollingDeltaX, (real32) e.scrollingDeltaY);
   }
 
   window->on_mouse_change(window, result);
 
-  log_debug("mouse event - pressed: %d, pos: (%g, %g), wheel: (%g, %g, %g), button: %d, pressure: %g, count: %d\n", result.button_pressed, result.position.x, result.position.y, result.wheel.x, result.wheel.y, result.wheel.z, result.button, result.pressure, result.click_count);
+  //log_debug("mouse event - pressed: %d, pos: (%g, %g), wheel: (%g, %g, %g), button: %d, pressure: %g, count: %d\n", result.button_pressed, result.position.x, result.position.y, result.wheel.x, result.wheel.y, result.wheel.z, result.button, result.pressure, result.click_count);
 }
 
 inline void
@@ -170,28 +170,28 @@ handle_touch_change(osx_window* window, NSEvent* e)
   touch_state result = {};
   window->on_touch_change(window, result);
 
-  switch (e.type)
-  {
-  case NSEventTypeMagnify:
-    NSLog(@"magnify");
-    break;
-  case NSEventTypeSwipe:
-    NSLog(@"swipe");
-    break;
-  case NSEventTypeRotate:
-    NSLog(@"rotate");
-    break;
-  default:
-    NSLog(@"unknown touch event type: %lld", (uint64)e.type);
-    break;
-  }
+  // switch (e.type)
+  // {
+  // case NSEventTypeMagnify:
+  //   NSLog(@"magnify");
+  //   break;
+  // case NSEventTypeSwipe:
+  //   NSLog(@"swipe");
+  //   break;
+  // case NSEventTypeRotate:
+  //   NSLog(@"rotate");
+  //   break;
+  // default:
+  //   NSLog(@"unknown touch event type: %lld", (uint64)e.type);
+  //   break;
+  // }
 
   NSSet* touch_match = [e touchesMatchingPhase:NSTouchPhaseAny inView:window->ns_window.contentView];
   NSArray* array = [touch_match allObjects];
 
   assert(touch_match.count < sizeof(result.touches));
 
-  log_debug("touch event -");
+  //log_debug("touch event -");
   touch_info* ti = result.touches;
   for (uint32 touch_index = 0; touch_index < touch_match.count; ++touch_index, ++ti)
   {
@@ -199,7 +199,7 @@ handle_touch_change(osx_window* window, NSEvent* e)
     ti->index = touch_index; // NOTE(matt): Might not be the same as finger?
     ti->position = { (real32) touch.normalizedPosition.x, (real32) touch.normalizedPosition.y };
     ti->phase = (touch_phase) touch.phase;
-    NSLog(@"  touch %d - identity %@, phase: %lld, pos: (%g, %g)", touch_index, touch.identity, (uint64)touch.phase, touch.normalizedPosition.x, touch.normalizedPosition.y);
+    //NSLog(@"  touch %d - identity %@, phase: %lld, pos: (%g, %g)", touch_index, touch.identity, (uint64)touch.phase, touch.normalizedPosition.x, touch.normalizedPosition.y);
   }
 
   window->on_touch_change(window, result);

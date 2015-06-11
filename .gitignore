@@ -2,3 +2,5 @@
 .build
 .sdf
 .suo
+.tundra2*
+t2-output
