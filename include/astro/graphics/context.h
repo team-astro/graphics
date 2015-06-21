@@ -26,6 +26,4 @@ namespace graphics
 }
 
 
-
-
 #endif

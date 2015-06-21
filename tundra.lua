@@ -1,6 +1,13 @@
 dofile "scripts/bootstrap.lua"
 local toolchain = require "astro.toolchain"
 local native = require "tundra.native"
+local path = require "tundra.path"
+
+local buildDir = path.join(native.getcwd(), ".build")
+local projectsDir = path.join(buildDir, "projects")
+
+native.mkdir(buildDir)
+native.mkdir(projectsDir)
 
 _G.ASTRO_ROOT = "../astro/"
 
@@ -22,6 +29,9 @@ Build {
       { "1"; Config = { "*-vs2015-debug", "*-vs2015-production" } },
     }
   },
+  ReplaceEnv = {
+    OBJECTROOT = buildDir
+  },
   Configs = toolchain.config,
   IdeGenerationHints = {
     Msvc = {
@@ -39,7 +49,7 @@ Build {
     },
 
     -- Override output directory for sln/vcxproj files.
-    MsvcSolutionDir = 'vs2015',
+    MsvcSolutionDir = path.join(buildDir, "projects", 'vs2015'),
 
     -- Override solutions to generate and what units to put where.
     MsvcSolutions = {

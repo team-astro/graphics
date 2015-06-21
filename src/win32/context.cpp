@@ -3,21 +3,17 @@
 */
 
 #include <astro/astro.h>
-#include <astro/graphics/context.h>
 #include "win32_window.h"
+#include "renderer_gl.h"
 
 #define GL_GLEXT_PROTOTYPES
 #include <gl/glcorearb.h>
-#include <wgl/wglext.h>
+
 
 namespace astro
 {
 namespace graphics
 {
-  typedef PROC(APIENTRY* PFNWGLGETPROCADDRESSPROC) (LPCSTR lpszProc);
-  typedef BOOL(APIENTRY* PFNWGLMAKECURRENTPROC) (HDC hdc, HGLRC hglrc);
-  typedef HGLRC(APIENTRY* PFNWGLCREATECONTEXTPROC) (HDC hdc);
-  typedef BOOL(APIENTRY* PFNWGLDELETECONTEXTPROC) (HGLRC hglrc);
 
   static void* gl_module = nullptr;
   static ATOM dummy_window_atom = -1;
@@ -35,6 +31,9 @@ namespace graphics
   typedef BOOL(WINAPI * PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
   typedef HGLRC(WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
 
+#	define GL_IMPORT(_optional, _proto, _func, _import) _proto _func
+#	include "glimport.h"
+
   struct win32_context : public context
   {
     void* gl_handle;
@@ -50,8 +49,8 @@ namespace graphics
     T p = (T) wglGetProcAddress(name);
     if (p == nullptr || p == (void*)0x1 || p == (void*)0x2 || p == (void*)0x3 || p == (void*)-1)
     {
-      astro_assert(ogl_handle);
-      p = (T) dlsym(ogl_handle, name);
+      astro_assert(gl_module);
+      p = (T) dlsym(gl_module, name);
     }
 
     return p;
@@ -64,6 +63,30 @@ namespace graphics
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   }
 
+  void
+  gl_context_import()
+  {
+    log_debug("Import:");
+#	define GL_EXTENSION(_optional, _proto, _func, _import) \
+    { \
+      if (NULL == _func) \
+      { \
+        _func = (_proto)wglGetProcAddress(#_import); \
+        if (_func == NULL) \
+        { \
+	        _func = (_proto)dlsym(gl_module, #_import); \
+	        log_debug("    %p " #_func " (" #_import ")", _func); \
+        } \
+        else \
+        { \
+	        log_debug("wgl %p " #_func " (" #_import ")", _func); \
+        } \
+        if (!ASTRO_IGNORE_C4127(_optional) && NULL == _func) \
+          log_error("Failed to create OpenGL context. wglGetProcAddress(\"%s\")", #_import); \
+      } \
+    }
+#	include "glimport.h"
+  }
 
   static HGLRC
   create_context(HDC hdc)

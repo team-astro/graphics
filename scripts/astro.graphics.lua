@@ -39,11 +39,14 @@ project "astro.graphics"
   configuration {}
 
   includedirs {
+    path.join(ASTRO_GFX_DIR, "src"),
     path.join(ASTRO_GFX_DIR, "include")
   }
 
   files {
     path.join(ASTRO_GFX_DIR, "include/**.h"),
+    path.join(ASTRO_GFX_DIR, "src/**.h"),
+    path.join(ASTRO_GFX_DIR, "src/*.cpp"),
   }
 
   defines {

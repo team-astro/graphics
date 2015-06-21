@@ -11,11 +11,11 @@
 #	undef GL_IMPORT
 #	define GL_IMPORT GL_EXTENSION
 #else
-#	if !ASTRO_USE_GL_DYNAMIC_LIB
+#	if !ASTRO_GFX_USE_GL_DYNAMIC_LIB
 #		define GL_EXTENSION GL_IMPORT
 #	else
 #		define GL_EXTENSION(_optional, _proto, _func, _import)
-#	endif // !ASTRO_USE_GL_DYNAMIC_LIB
+#	endif // !ASTRO_GFX_USE_GL_DYNAMIC_LIB
 #endif // GL_EXTENSION
 
 #ifndef GL_IMPORT_TYPEDEFS
@@ -207,7 +207,7 @@ typedef void           (GL_APIENTRYP PFNGLPUSHGROUPMARKEREXTPROC) (GLsizei lengt
 typedef void           (GL_APIENTRYP PFNGLPOPGROUPMARKEREXTPROC) (void);
 #endif // GL_IMPORT_TYPEDEFS
 
-#if ASTRO_USE_GL_DYNAMIC_LIB
+#if ASTRO_GFX_USE_GL_DYNAMIC_LIB
 GL_IMPORT______(false, PFNGLACTIVETEXTUREPROC,                     glActiveTexture);
 GL_IMPORT______(false, PFNGLATTACHSHADERPROC,                      glAttachShader);
 GL_IMPORT______(true,  PFNGLBEGINQUERYPROC,                        glBeginQuery);
@@ -370,7 +370,7 @@ GL_IMPORT______(false, PFNGLVERTEXATTRIB3FPROC,                    glVertexAttri
 GL_IMPORT______(false, PFNGLVERTEXATTRIB4FPROC,                    glVertexAttrib4f);
 GL_IMPORT______(false, PFNGLVIEWPORTPROC,                          glViewport);
 
-#	if ASTRO_CONFIG_RENDERER_OPENGL
+#	if ASTRO_GFX_CONFIG_RENDERER_OPENGL
 GL_IMPORT______(false, PFNGLCLEARDEPTHPROC,                        glClearDepth);
 GL_IMPORT______(false, PFNGLPOINTSIZEPROC,                         glPointSize);
 
@@ -416,18 +416,18 @@ GL_IMPORT_EXT__(true,  PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC,    glRenderbuffe
 
 #	else // GLES
 GL_IMPORT______(false, PFNGLCLEARDEPTHFPROC,                       glClearDepthf);
-#	endif // ASTRO_CONFIG_RENDERER_OPENGL
+#	endif // ASTRO_GFX_CONFIG_RENDERER_OPENGL
 
 GL_IMPORT______(true,  PFNGLINSERTEVENTMARKEREXTPROC,              glInsertEventMarker);
 GL_IMPORT______(true,  PFNGLPUSHGROUPMARKEREXTPROC,                glPushGroupMarker);
 GL_IMPORT______(true,  PFNGLPOPGROUPMARKEREXTPROC,                 glPopGroupMarker);
-#endif // ASTRO_USE_GL_DYNAMIC_LIB
+#endif // ASTRO_GFX_USE_GL_DYNAMIC_LIB
 
 GL_IMPORT______(true,  PFNGLSTRINGMARKERGREMEDYPROC,               glStringMarkerGREMEDY);
 GL_IMPORT______(true,  PFNGLFRAMETERMINATORGREMEDYPROC,            glFrameTerminatorGREMEDY);
 GL_IMPORT______(true,  PFNGLGETTRANSLATEDSHADERSOURCEANGLEPROC,    glGetTranslatedShaderSourceANGLE);
 
-#if !ASTRO_CONFIG_RENDERER_OPENGL
+#if !ASTRO_GFX_CONFIG_RENDERER_OPENGL
 GL_IMPORT_ANGLE(true,  PFNGLBLITFRAMEBUFFERPROC,                   glBlitFramebuffer);
 GL_IMPORT_ANGLE(true,  PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC,    glRenderbufferStorageMultisample);
 
@@ -436,7 +436,7 @@ GL_IMPORT_KHR__(true,  PFNGLDEBUGMESSAGEINSERTPROC,                glDebugMessag
 GL_IMPORT_KHR__(true,  PFNGLDEBUGMESSAGECALLBACKPROC,              glDebugMessageCallback);
 GL_IMPORT_KHR__(true,  PFNGLGETDEBUGMESSAGELOGPROC,                glGetDebugMessageLog);
 
-#	if ASTRO_CONFIG_RENDERER_OPENGLES < 30
+#	if ASTRO_GFX_CONFIG_RENDERER_OPENGLES < 30
 GL_IMPORT_OES__(true,  PFNGLTEXIMAGE3DPROC,                        glTexImage3D);
 GL_IMPORT_OES__(true,  PFNGLTEXSUBIMAGE3DPROC,                     glTexSubImage3D);
 GL_IMPORT_OES__(true,  PFNGLCOMPRESSEDTEXIMAGE3DPROC,              glCompressedTexImage3D);
@@ -570,8 +570,8 @@ GL_IMPORT______(true,  PFNGLMULTIDRAWELEMENTSINDIRECTPROC,         glMultiDrawEl
 
 GL_IMPORT______(true,  PFNGLINVALIDATEFRAMEBUFFERPROC,             glInvalidateFramebuffer);
 
-#	endif // ASTRO_CONFIG_RENDERER_OPENGLES < 30
-#endif // !ASTRO_CONFIG_RENDERER_OPENGL
+#	endif // ASTRO_GFX_CONFIG_RENDERER_OPENGLES < 30
+#endif // !ASTRO_GFX_CONFIG_RENDERER_OPENGL
 
 #undef GL_IMPORT_TYPEDEFS
 #undef GL_IMPORT
