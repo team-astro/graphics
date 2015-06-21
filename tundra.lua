@@ -1,6 +1,17 @@
+dofile "scripts/bootstrap.lua"
+local toolchain = require "astro.toolchain"
+local native = require "tundra.native"
+
+_G.ASTRO_ROOT = "../astro/"
 
 Build {
-  Units = "scripts/units.lua",
+  Units = {
+    _G.ASTRO_ROOT .. "scripts/astro/library.lua",
+    "scripts/units.lua",
+  },
+  ScriptsDirs = {
+    _G.ASTRO_ROOT .. "scripts/astro"
+  },
   Env = {
     CXXOPTS = {
       { "/W4"; Config = "*-vs2015-*" },
@@ -11,44 +22,7 @@ Build {
       { "1"; Config = { "*-vs2015-debug", "*-vs2015-production" } },
     }
   },
-  Configs = {
-    Config {
-      Name = "macosx-clang",
-      DefaultOnHost = "macosx",
-      Tools = { "clang-osx" },
-      Env = {
-        CXXOPTS = {
-          "-std=c++11 -stdlib=libc++"
-        },
-        PROGOPTS = {
-          "-stdlib=libc++"
-        },
-        LIBOPTS = {
-          -- "-stdlib=libc++",
-          -- "-fobjc-arc",
-          -- "-fobjc-link-runtime"
-        },
-        SHLIBOPTS = {
-          "-stdlib=libc++"
-        },
-      },
-      ReplaceEnv = {
-        -- link with c++ compiler to get stdlib
-        LD = "$(CXX)",
-        --LIBCOM = "$(CXX) $(LIBOPTS) $(FRAMEWORKPATH:p-F)  $(FRAMEWORKS:p-framework ) -o $(@) $(<)",
-      }
-    },
-    Config {
-      Name = 'win64-vs2015',
-      Tools = { { "msvc-vs2015"; TargetArch = "x64" }, },
-      DefaultOnHost = "windows",
-    },
-    Config {
-      Name = 'win32-vs2015',
-      Tools = { { "msvc-vs2015"; TargetArch = "x32" }, },
-      SupportedHosts = { "windows" },
-    },
-  },
+  Configs = toolchain.config,
   IdeGenerationHints = {
     Msvc = {
       -- Remap config names to MSVC platform names (affects things like header scanning & debugging)
@@ -69,7 +43,7 @@ Build {
 
     -- Override solutions to generate and what units to put where.
     MsvcSolutions = {
-      ['astro.graphics.sln'] = {},          -- receives all the units due to empty set
+      ['AstroGraphics.sln'] = {},          -- receives all the units due to empty set
       -- ['ProgramOnly.sln'] = { Projects = { "prog" } },
       -- ['LibOnly.sln'] = { Projects = { "blahlib" } },
     },
