@@ -3,8 +3,9 @@
 */
 
 #include <astro/astro.h>
+#include <astro/graphics/renderer.h>
 #include "win32_window.h"
-#include "renderer_gl.h"
+#include "glsupport.h"
 
 #define GL_GLEXT_PROTOTYPES
 #include <gl/glcorearb.h>
@@ -34,7 +35,7 @@ namespace graphics
 #	define GL_IMPORT(_optional, _proto, _func, _import) _proto _func
 #	include "glimport.h"
 
-  struct win32_context : public context
+  struct win32_swap_chain : public swap_chain
   {
     void* gl_handle;
     HDC hdc;
@@ -130,8 +131,8 @@ namespace graphics
     return context;
   }
 
-  context*
-  create_context(window* window)
+  swap_chain*
+  create_swap_chain(window* window)
   {
     win32_window* win = (win32_window*)window;
     window->on_render = gl_context_on_render;
@@ -150,7 +151,7 @@ namespace graphics
     HDC hdc = GetDC(handle);
 
     auto* stack = &window->app->stack;
-    win32_context* ctx = push_struct<win32_context>(stack);
+    win32_swap_chain* ctx = push_struct<win32_swap_chain>(stack);
     ctx->gl_handle = dlopen("opengl32.dll");
     ctx->hdc = GetDC(win->handle);
 

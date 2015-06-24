@@ -8,7 +8,8 @@ using namespace astro;
 
 #import <Cocoa/Cocoa.h>
 
-#include <astro/graphics/context.h>
+#include <astro/graphics/application.h>
+#include <astro/graphics/renderer.h>
 #include "osx_window.h"
 
 using namespace astro;
@@ -173,7 +174,7 @@ namespace graphics
     [window->ns_window setDelegate:delegate];
     [window->ns_window setAcceptsMouseMovedEvents:YES];
 
-    window->context = create_context(window);
+    window->context = create_swap_chain(window);
 
     [window->ns_window setPreservesContentDuringLiveResize:NO];
     [window->ns_window makeKeyAndOrderFront:nil];
@@ -191,7 +192,7 @@ namespace graphics
     osx_window* osx_win = (osx_window*) win;
     NSWindow* nswin = osx_win->ns_window;
 
-    context_make_current(win->context, resize);
+    swap_chain_make_current(win->context, resize);
     if (resize)
     {
       NSRect rect = [[nswin contentView] bounds];
@@ -207,7 +208,7 @@ namespace graphics
     assert(win->on_render);
     win->on_render(win, delta_time);
 
-    context_flush(win->context);
+    swap_chain_flush(win->context);
   }
 }
 }

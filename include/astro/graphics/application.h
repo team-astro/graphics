@@ -8,20 +8,7 @@
 #include <astro/astro.h>
 #include <astro/memory.h>
 
-namespace astro
-{
-  // TODO: Define these types elsewhere.
-  struct vec2
-  {
-    real32 x, y;
-  };
-
-  struct vec3
-  {
-    real32 x, y, z;
-  };
-
-namespace graphics
+namespace astro { namespace graphics
 {
   struct window_list;
 

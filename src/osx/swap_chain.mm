@@ -4,7 +4,8 @@
 
 #include <astro/astro.h>
 #include <astro/memory.h>
-#include <astro/graphics/context.h>
+#include <astro/graphics/application.h>
+#include <astro/graphics/renderer.h>
 #include "osx_window.h"
 
 using namespace astro;
@@ -25,7 +26,7 @@ using namespace astro::graphics;
 
 namespace astro { namespace graphics
 {
-  struct osx_context : public context
+  struct osx_swap_chain : public swap_chain
   {
     NSOpenGLPixelFormat* pixelFormat;
     AstroRenderView* view;
@@ -38,12 +39,12 @@ namespace astro { namespace graphics
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   }
 
-  context*
-  create_context(window* window)
+  swap_chain*
+  create_swap_chain(window* window)
   {
     osx_window* win = (osx_window*)window;
     NSWindow* nswin = win->ns_window;
-    osx_context* context = push_struct<osx_context>(&win->app->stack);
+    osx_swap_chain* chain = push_struct<osx_swap_chain>(&win->app->stack);
 
     NSOpenGLPixelFormatAttribute attrs[] =
     {
@@ -60,27 +61,27 @@ namespace astro { namespace graphics
       0
     };
 
-    context->pixelFormat =
+    chain->pixelFormat =
         [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
 
     NSRect frame = NSMakeRect(0, 0, nswin.frame.size.width, nswin.frame.size.height);
-    context->view =
-        [[AstroRenderView alloc] initWithFrame:frame pixelFormat:context->pixelFormat platformWindow:win];
-    [context->view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [context->view setWantsBestResolutionOpenGLSurface:YES];
+    chain->view =
+        [[AstroRenderView alloc] initWithFrame:frame pixelFormat:chain->pixelFormat platformWindow:win];
+    [chain->view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [chain->view setWantsBestResolutionOpenGLSurface:YES];
 
-    [nswin setContentView:context->view];
-    [nswin setInitialFirstResponder:context->view];
+    [nswin setContentView:chain->view];
+    [nswin setInitialFirstResponder:chain->view];
 
     win->on_render = gl_context_on_render;
 
-    return context;
+    return chain;
   }
 
   void
-  context_make_current(context* context, bool resize)
+  swap_chain_make_current(swap_chain* chain, bool resize)
   {
-    osx_context* ctx = (osx_context*)context;
+    osx_swap_chain* ctx = (osx_swap_chain*)chain;
 
     // NOTE(matt): Need to lock the context to avoid access between
     // resize (main thread) and CVDisplayLink (background thread)
@@ -96,9 +97,9 @@ namespace astro { namespace graphics
   }
 
   void
-  context_flush(context* context)
+  swap_chain_flush(swap_chain* chain)
   {
-    osx_context* ctx = (osx_context*)context;
+    osx_swap_chain* ctx = (osx_swap_chain*)chain;
     CGLFlushDrawable([[ctx->view openGLContext] CGLContextObj]);
     CGLUnlockContext([[ctx->view openGLContext] CGLContextObj]);
   }

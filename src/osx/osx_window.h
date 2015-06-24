@@ -4,7 +4,6 @@
 
 #include <astro/astro.h>
 #include <astro/graphics/window.h>
-#include <astro/graphics/context.h>
 using namespace astro;
 
 #import <Cocoa/Cocoa.h>

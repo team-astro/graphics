@@ -673,17 +673,17 @@ typedef uint64_t GLuint64;
 #endif // GL_APIENTRYP
 
 #if ASTRO_PLATFORM_NACL
-#	include "ppapi/context.h"
+#	include "ppapi/swap_chain.h"
 #elif ASTRO_PLATFORM_LINUX || ASTRO_PLATFORM_FREEBSD
-#	include "glx/context.h"
+#	include "glx/swap_chain.h"
 #elif ASTRO_PLATFORM_OSX
-#	include "osx/context.h"
+#	include "osx/swap_chain.h"
 #elif ASTRO_PLATFORM_IOS
-#	include "ios/context.h"
+#	include "ios/swap_chain.h"
 #endif // ASTRO_PLATFORM_
 
 #if ASTRO_GFX_USE_WGL
-#	include "win32/context.h"
+#	include "win32/swap_chain.h"
 #endif // ASTRO_GFX_USE_WGL
 
 #define GL_IMPORT_TYPEDEFS 1

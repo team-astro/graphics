@@ -3,6 +3,8 @@ require "tundra.syntax.glob"
 local platform = require "tundra.platform"
 local native = require "tundra.native"
 
+_G.ASTRO_GFX_ROOT = _G.ASTRO_GFX_ROOT or "./"
+
 local astro_gfx_libs = {
     { "Gdi32.lib", "kernel32.lib", "user32.lib"; Config = { "win32-*-*", "win64-*-*" } },
 }
@@ -21,7 +23,7 @@ local astroGfx = StaticLibrary {
   Depends = { "Astro" },
   Sources = {
     FGlob {
-      Dir = "src",
+      Dir = _G.ASTRO_GFX_ROOT .. "src",
       Extensions = { ".h", ".cpp", ".mm" },
       Filters = {
         { Pattern = "/nacl/"; Config = "nacl-*-*" },
@@ -36,10 +38,10 @@ local astroGfx = StaticLibrary {
   Defines = astro_gfx_defines,
   Env = {
     CPPPATH = {
-      "src/",
-      "include/",
-      "lib/khronos/",
-      "lib/",
+      _G.ASTRO_GFX_ROOT .. "src/",
+      _G.ASTRO_GFX_ROOT .. "include/",
+      _G.ASTRO_GFX_ROOT .. "lib/khronos/",
+      _G.ASTRO_GFX_ROOT .. "lib/",
     },
   },
   Propagate = {
@@ -49,8 +51,8 @@ local astroGfx = StaticLibrary {
     Defines = astro_gfx_defines,
     Env = {
       CPPPATH = {
-        "include/",
-        "lib/",
+        _G.ASTRO_GFX_ROOT .. "include/",
+        _G.ASTRO_GFX_ROOT .. "lib/",
       },
       PROGOPTS = {
       }
@@ -58,45 +60,48 @@ local astroGfx = StaticLibrary {
   },
 }
 
-local gfxTests = Program {
-  Name = "AstroGraphicsTests",
-  Sources = {
-    "test/main.cpp",
-  },
-  Depends = { astroGfx },
-  Env = {
-    CXXOPTS = {
-      { "-s TOTAL_MEMORY=33554432"; Config = "asmjs-*-*" },
-      { "-s ASSERTIONS=2 -s SAFE_HEAP=1"; Config = "asmjs-debug-*" },
+-- TODO: Better check for "not building as dependency"
+if _G.ASTRO_GFX_ROOT == "./" then
+  local gfxTests = Program {
+    Name = "AstroGraphicsTests",
+    Sources = {
+      _G.ASTRO_GFX_ROOT .. "test/main.cpp",
     },
-    PROGOPTS = {
-      { "-s TOTAL_MEMORY=33554432"; Config = "asmjs-*-*" },
-      { "-s ASSERTIONS=2 -s SAFE_HEAP=1"; Config = "asmjs-debug-*" },
-    },
-    CPPPATH = {
-      "include/",
-      "lib/",
-      "../astro/include/",
-      "../astro/lib/",
-    },
-  },
-}
-
-
-if platform.host_platform() == "macosx" then
-  local gfxTestsBundle = OsxBundle {
-    Depends = { gfxTests },
-    Config = "osx-*-*",
-    Target = "$(OBJECTDIR)/AstroGraphicsTests.app",
-    InfoPList = "test/osx/Info.plist",
-    Executable = "$(OBJECTDIR)/AstroGraphicsTests",
-    Resources = {
-
+    Depends = { astroGfx },
+    Env = {
+      CXXOPTS = {
+        { "-s TOTAL_MEMORY=33554432"; Config = "asmjs-*-*" },
+        { "-s ASSERTIONS=2 -s SAFE_HEAP=1"; Config = "asmjs-debug-*" },
+      },
+      PROGOPTS = {
+        { "-s TOTAL_MEMORY=33554432"; Config = "asmjs-*-*" },
+        { "-s ASSERTIONS=2 -s SAFE_HEAP=1"; Config = "asmjs-debug-*" },
+      },
+      CPPPATH = {
+        "include/",
+        "lib/",
+        "../astro/include/",
+        "../astro/lib/",
+      },
     },
   }
 
-  -- TODO: Only build bundle on OS X
-  Default(gfxTestsBundle)
-else
-  Default(gfxTests)
+
+  if platform.host_platform() == "macosx" then
+    local gfxTestsBundle = OsxBundle {
+      Depends = { gfxTests },
+      Config = "osx-*-*",
+      Target = "$(OBJECTDIR)/AstroGraphicsTests.app",
+      InfoPList = "test/osx/Info.plist",
+      Executable = "$(OBJECTDIR)/AstroGraphicsTests",
+      Resources = {
+
+      },
+    }
+
+    -- TODO: Only build bundle on OS X
+    Default(gfxTestsBundle)
+  else
+    Default(gfxTests)
+  end
 end

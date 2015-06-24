@@ -6,13 +6,14 @@
 #define ASTRO_GFX_WINDOW
 
 #include <astro/astro.h>
-#include <astro/graphics/application.h>
-#include <astro/graphics/context.h>
 
 namespace astro
 {
 namespace graphics
 {
+  struct application;
+  struct swap_chain;
+
   struct window_events
   {
     vec2 mouse_pos;
@@ -190,7 +191,7 @@ namespace graphics
     uint16 width;
     uint16 height;
     application* app;
-    context* context;
+    swap_chain* context;
 
     // TODO: Render callback should take context.
     void (*on_render)(window* win, real32 dt);
